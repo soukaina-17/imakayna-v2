@@ -1,141 +1,125 @@
 {% extends "layout.html" %}
 {% block content %}
+
+<!-- Section d'accueil -->
 <section class="text-dark p-5 p-lg-0 text-center text-sm-start bg-warning-subtle">
     <div class="container">
         <div class="d-sm-flex align-items-center justify-content-between">
             <div>
-                <h1 class="mb-8"> Apprendre l'art de <span class="text-warning"> Cuisiner</span></h1>
+                <h1 class="mb-4"> Apprendre l'art de <span class="text-warning">Cuisiner</span></h1>
                 <p class="lead my-4">
-                    Bienvenue dans notre univers gourmand! Notre objectif est de rendre chaque recette une aventure délicieuse. Laissez-vous guider par la simplicité et l'inspiration culinaire !                   
-                </p>               
-
+                    Bienvenue dans notre univers gourmand ! Chaque recette est une aventure délicieuse. Laissez-vous guider par la simplicité et l'inspiration culinaire.
+                </p>
             </div>
-            <img class="img-fluid w-100 d-none d-sm-block" src="{{url_for('static', filename='recette1.jpeg')}}" alt="">
+            <img class="img-fluid w-100 d-none d-sm-block" src="{{ url_for('static', filename='recette1.jpeg') }}" alt="Image de cuisine">
         </div>
     </div>
 </section>
-<!-- Social Media -->
-<section class=" text-success m-2" style="background-color: palegoldenrod;">
+
+<!-- Réseaux sociaux -->
+<section class="text-success m-2" style="background-color: palegoldenrod;">
     <div class="container">
         <div class="d-md-flex justify-content-between align-items-center">
             <a class="btn btn-danger border"
-                    href="https://www.youtube.com/channel/UCEsvQ6d7qsnOSNXtccIzScQ?sub_confirmation=1" target="_blank">
-                    <i class="bi bi-youtube m-1"></i>S'abonner
-                </a>
+               href="https://www.youtube.com/channel/UCEsvQ6d7qsnOSNXtccIzScQ?sub_confirmation=1" target="_blank">
+                <i class="bi bi-youtube m-1"></i> S'abonner
+            </a>
+
             <nav class="navbar navbar-expand-lg navbar-dark">
-                <button class="navbar-toggler border" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#socialbtn">
+                <button class="navbar-toggler border" type="button" data-bs-toggle="collapse" data-bs-target="#socialbtn">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="socialbtn">
                     <h5 class="mb-3 text-center">Rejoignez notre communauté</h5>
-                    <ul class="navbar-nav">                        
-                        <li class="nav-item">
-                            <a class="text-success ms-3 " href="https://github.com/najjahi"
-                                target="_blank"><i class="bi bi-github fs-2" role="img"></i></a>
-                        </li>
-                        <li>
-                            <a class="text-success ms-3" href="https://www.facebook.com/najjahi"
-                                target="_blank"><i class="bi bi-facebook fs-2"></i>  </a>
-                        </li>
-                        <li class="nav-item">
-                            <a type="button" class="text-success ms-3"
-                                href="https://www.instagram.com/najjahi" target="_blank">
-                                <i class="bi bi-instagram fs-2"></i>                                
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="text-success ms-3" href="https://twitter.com/najjahi"
-                                target="_blank"><i class="bi bi-twitter fs-2"></i>                       
-                            </a>
-
-                        </li>
-                        <li class="nav-item">
-                            <a class="text-success ms-3" href="https://www.tiktok.com/najjahi"
-                                target="_blank"><i class="bi bi-tiktok fs-2"></i>                                
-                            </a>
-                        </li>
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="text-success ms-3" href="https://github.com/najjahi" target="_blank"><i class="bi bi-github fs-2"></i></a></li>
+                        <li><a class="text-success ms-3" href="https://www.facebook.com/najjahi" target="_blank"><i class="bi bi-facebook fs-2"></i></a></li>
+                        <li class="nav-item"><a class="text-success ms-3" href="https://www.instagram.com/najjahi" target="_blank"><i class="bi bi-instagram fs-2"></i></a></li>
+                        <li class="nav-item"><a class="text-success ms-3" href="https://twitter.com/najjahi" target="_blank"><i class="bi bi-twitter fs-2"></i></a></li>
+                        <li class="nav-item"><a class="text-success ms-3" href="https://www.tiktok.com/najjahi" target="_blank"><i class="bi bi-tiktok fs-2"></i></a></li>
                     </ul>
                 </div>
             </nav>
         </div>
     </div>
-    </div>
 </section>
+
 <!-- Plats -->
-<section class="bg-warning-subtle ">
-    <div class="container p-5">       
-        <h3 class="text-uppercase text-center text-success bg-light" id='learn'>Nos différents Plats proposés</h3>
+<section class="bg-warning-subtle">
+    <div class="container p-5">
+        <h3 class="text-uppercase text-center text-success bg-light" id="learn">Nos différents Plats proposés</h3>
         <div class="row">
             {% for plat in plats.items %}
             <div class="col-sm-12 col-md-6 col-lg-4 p-3 d-flex align-items-stretch">
-                <a href="{{url_for('plats.plat', plat_title=plat.title)}}" class="text-decoration-none">
-                    <div class="card bg-success text-warning h-100">
+                <a href="{{ url_for('plats.plat', plat_title=plat.title) }}" class="text-decoration-none">
+                    <div class="card bg-success text-warning h-100 hover-shadow">
                         <div class="card-body text-center">
-                            <img src="{{url_for('static', filename='plat_icons/'+plat.icon)}}" alt=""
-                                class="card-img w-25">
-                            <h4 class="card-title mb-3">
-                                {{plat.title}}
-                            </h4>
-                            <p class="card-text">{{plat.description}}</p>
+                            <img src="{{ url_for('static', filename='plat_icons/' + plat.icon) }}" alt="Image du plat {{ plat.title }}" class="card-img w-25">
+                            <h4 class="card-title my-3">{{ plat.title }}</h4>
+                            <p class="card-text">{{ plat.description }}</p>
                         </div>
                     </div>
                 </a>
             </div>
             {% endfor %}
         </div>
-        <!-- more plats -->
-        <div class="" style="display: flex; justify-content: flex-end">
-            <a href="{{ url_for('plats.plats')}}" class="btn btn-warning btn-lg"> Plus de Plats &gt&gt&gt</a>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-end mt-4">
+            <a href="{{ url_for('plats.plats') }}" class="btn btn-warning btn-lg">Plus de Plats &gt;&gt;&gt;</a>
         </div>
     </div>
 </section>
 
 <!-- Recettes -->
-<section class="bg-warning-subtle"> 
+<section class="bg-warning-subtle">
     <div class="container p-5">
-        <div class="row mb-5 ">
+        <div class="row mb-5">
             <div class="col">
                 <h3 class="text-uppercase text-center text-success bg-light">Recettes ajoutées récemment</h3>
             </div>
         </div>
+
         <div class="row">
             {% for recette in recettes.items %}
             <div class="col-sm-12 col-md-6 col-lg-4 pb-5 d-flex align-items-stretch">
                 <div class="card recette">
-                    <img src="{{url_for('static', filename='recette_thumbnails/'+recette.thumbnail)}}" class="card-img">
+                    <img src="{{ url_for('static', filename='recette_thumbnails/' + recette.thumbnail) }}" class="card-img" alt="Image de la recette {{ recette.title }}">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">
                             {% if recette.slug and recette.plat_name %}
-                            <a class="text-decoration-none text-dark"
-                               href="{{ url_for('recettes.recette', recette_slug=recette.slug, plat=recette.plat_name.title) }}">
-                               {{ recette.title }}
-                            </a>
+                                <a class="text-decoration-none text-dark"
+                                   href="{{ url_for('recettes.recette', recette_slug=recette.slug, plat=recette.plat_name.title) }}">
+                                   {{ recette.title }}
+                                </a>
                             {% else %}
-                            <p>Données manquantes pour cette recette.</p>
+                                <div class="alert alert-warning p-2">
+                                    Données manquantes pour cette recette.
+                                </div>
                             {% endif %}
-                                <p>Recette Slug: {{ recette.slug }}</p>
                         </h5>
-                        <p class="card-text mb-0">Dans:
-                            <a class="text-decoration-none"
-                                href="{{ url_for('plats.plat', plat_title=recette.plat_name.title)}}">{{recette.plat_name.title}}</a>
-                        </p>
-                        <p>Le nom du Plat : {{ recette.plat_name }}</p>
 
-                        <span><img class="article-img rounded-circle"
-                                src="{{url_for('static', filename='user_pics/'+recette.author.image_file)}}" alt="">Par:
-                            <a href="{{ url_for('users.author', username=recette.author.username)}}"
-                                class="link">{{recette.author.username}}</a></span>
-                                <p>Le titre du nom du Plat: {{ recette.plat_name.title }}</p>
-                        <span class="text-muted">Le: {{recette.date_posted.strftime('%Y-%m-%d')}}</span>
+                        {% if recette.plat_name %}
+                        <p class="card-text mb-0">Dans :
+                            <a class="text-decoration-none" href="{{ url_for('plats.plat', plat_title=recette.plat_name.title) }}">
+                                {{ recette.plat_name.title }}
+                            </a>
+                        </p>
+                        {% endif %}
+
+                        <span class="mt-2 d-flex align-items-center">
+                            <img class="article-img rounded-circle me-2" src="{{ url_for('static', filename='user_pics/' + recette.author.image_file) }}" alt="Photo de {{ recette.author.username }}">
+                            Par :
+                            <a href="{{ url_for('users.author', username=recette.author.username) }}" class="ms-1">{{ recette.author.username }}</a>
+                        </span>
+
+                        <span class="text-muted mt-2">Le : {{ recette.date_posted.strftime('%Y-%m-%d') }}</span>
                     </div>
                 </div>
             </div>
             {% endfor %}
-
         </div>
     </div>
 </section>
 
-
-{% endblock content%}
+{% endblock content %}

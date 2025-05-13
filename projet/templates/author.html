@@ -1,67 +1,71 @@
-{% extends "layout.html"%}
+{% extends "layout.html" %}
 {% block content %}
-<!-- author image and bio -->
-<div class="container-fluid bg-secondary">
+
+<!-- Author image and bio -->
+<div class="container-fluid bg-secondary py-5">
     <div class="container">
-        <div class="row p-5">
-            <div class="col-6">
-                <img class="rounded-circle" src="{{url_for('static', filename='user_pics/' + user.image_file)}}" alt="">
+        <div class="row align-items-center">
+            <div class="col-md-4 text-center mb-3 mb-md-0">
+                <img class="rounded-circle img-fluid" src="{{ url_for('static', filename='user_pics/' + user.image_file) }}" alt="Photo de {{ user.username }}">
             </div>
-            <div class="col-6">
-                <span class="lead text-light">{{user.bio}}</span>
+            <div class="col-md-8">
+                <span class="lead text-light">{{ user.bio }}</span>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Recipes Section -->
 <section class="bg-light">
-    <div class="container p-5">
-        <div class="row mb-5 ">
-        </div>
+    <div class="container py-5">
         <div class="row">
             {% for recette in recettes.items %}
             <div class="col-sm-12 col-md-6 col-lg-4 pb-5 d-flex align-items-stretch">
-                <div class="card recette">
-                    <img src="{{url_for('static', filename='recette_thumbnails/'+recette.thumbnail)}}" class="card-img">
+                <div class="card recette w-100">
+                    <img src="{{ url_for('static', filename='recette_thumbnails/' + recette.thumbnail) }}" class="card-img-top" alt="Image de la recette {{ recette.title }}">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">
                             <a class="text-decoration-none text-dark"
-                                href="{{url_for('recettes.recette', recette_slug=recette.slug, plat=recette.plat_name.title)}}"</a>
+                               href="{{ url_for('recettes.recette', recette_slug=recette.slug, plat=recette.plat_name.title) }}">
+                                {{ recette.title }}
+                            </a>
                         </h5>
-                        <p class="card-text mb-0">In:
-                            <a href="{{url_for('plats.plat', plat_title=recette.plat_name.title)}}"
-                                class="link">{{recette.plat_name.title}}</a>
+                        <p class="card-text mb-1">Dans :
+                            <a href="{{ url_for('plats.plat', plat_title=recette.plat_name.title) }}"
+                               class="link">
+                                {{ recette.plat_name.title }}
+                            </a>
                         </p>
-                        <span class="text-muted">On: {{recette.date_posted.strftime('%Y-%m-%d')}}</span>
-
+                        <span class="text-muted">Publié le : {{ recette.date_posted.strftime('%Y-%m-%d') }}</span>
                     </div>
                 </div>
             </div>
             {% endfor %}
-
-            <!-- pagination links -->
-            <nav class="mt-5" aria-label="...">
-                <ul class="pagination" style="display: flex; justify-content: flex-end">
-                    {% for page_num in recettes.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-                    {% if page_num %}
-                    {% if recettes.page == page_num %}
-                    <li class="page-item active">
-                        <a href="{{url_for('users.author', username=user.username, page=page_num)}}"
-                            class="page-link">{{page_num}}</a>
-                    </li>
-                    {%else%}
-                    <li class="page-item">
-                        <a href="{{url_for('users.author', username=user.username, page=page_num)}}"
-                            class="page-link">{{page_num}}</a>
-                    </li>
-                    {%endif%}
-                    {% else %}
-                    <span class="mx-2">...</span>
-                    {% endif %}
-                    {% endfor %}
-                </ul>
-            </nav>
         </div>
+
+        <!-- Pagination -->
+        <nav class="mt-4" aria-label="Pagination">
+            <ul class="pagination justify-content-end">
+                {% for page_num in recettes.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        {% if recettes.page == page_num %}
+                        <li class="page-item active">
+                            <a href="{{ url_for('users.author', username=user.username, page=page_num) }}" class="page-link">{{ page_num }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a href="{{ url_for('users.author', username=user.username, page=page_num) }}" class="page-link">{{ page_num }}</a>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
     </div>
 </section>
 
-{% endblock content%}
+{% endblock content %}

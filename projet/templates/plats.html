@@ -16,16 +16,14 @@
                         </div>
                     </div>
                 </a>
-                
-                <!-- Formulaire pour supprimer un plat -->
                 <div class="mt-auto p-3 d-flex justify-content-between">
-                    <form action="{{ url_for('plats.update_plat', plat_id=plat.id) }}" method="POST">
-                        <button type="submit" class="btn btn-primary">Modifier</button>
+                    <form action="{{ url_for('plats.update_plat', plat_id=plat.id) }}" method="POST">                        
+                        <i class="bi bi-pencil"></i>
                     </form>
-                <form action="{{ url_for('plats.delete_plat', plat_id=plat.id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce plat ?');">
-                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                </form>
-            </div>
+                    <form action="{{ url_for('plats.delete_plat', plat_id=plat.id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce plat ?');">
+                        <i class="bi bi-trash"></i>
+                    </form>
+                </div>                
             </div>
             {% endfor %}
         </div>

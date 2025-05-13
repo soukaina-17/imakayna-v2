@@ -5,15 +5,22 @@
         <!-- article contents -->
         <div class="col-lg-8 col-md-12">
             {% block recette %} {% endblock recette %}
-            <!--  precedent and suivant plat -->
+
+            <!-- BOUTON IMPRIMER -->
+            <div class="text-end mb-4 no-print">
+                <button class="btn btn-outline-secondary" onclick="window.print()">
+                    <i class="bi bi-printer"></i> Imprimer cette recette
+                </button>
+            </div>
+
+            <!-- precedent and suivant plat -->
             <div class="row justify-content-md-center">
                 <div class="col-4">
                     {% if precedent_plat %}
-                    <a
-                        href="{{url_for('plats.plat', plat_slug=precedent_plat.slug, plat=precedent_plat.plat_name.title)}}">
+                    <a href="{{url_for('plats.plat', plat_slug=precedent_plat.slug, plat=precedent_plat.plat_name.title)}}">
                         <button class="btn btn-warning" type="button" data-bs-toggle="tooltip" data-bs-placement="top"
                             title="{{precedent_recette.title}}">
-                            &lt&lt&lt Plat précédent
+                            &lt;&lt;&lt; Plat précédent
                         </button>
                     </a>
                     {% endif %}
@@ -23,26 +30,29 @@
                     <a href="{{url_for('recettes.recette', recette_slug=suivant_recette.slug, plat=suivant_recette.plat_name.title)}}">
                         <button class="btn btn-warning" type="button" data-bs-toggle="tooltip" data-bs-placement="top"
                             title="{{suivant_recette.title}}">
-                            &gt&gt&gt Plat suivant
+                            &gt;&gt;&gt; Plat suivant
                         </button>
                     </a>
                     {% endif %}
                 </div>
             </div>
         </div>
+
         <!-- sidebar -->
-        <div class="col-4">
+        <div class="col-4 no-print">
             <!-- author -->
             <div class="my-5">
-                <span><img class="article-img"
-                        src="{{url_for('static',filename='user_pics/'+recette.author.image_file)}}" alt="">By:
-                    <a href="#" class="link">{{recette.author.username}}</a>
+                <span>
+                    <img class="article-img" src="{{url_for('static',filename='user_pics/'+recette.author.image_file)}}" alt="">
+                    By: <a href="#" class="link">{{recette.author.username}}</a>
                     <span class="text-muted">On: {{recette.date_posted.strftime('%Y-%m-%d')}}</span>
                 </span>
             </div>
+
             <!-- plat icon -->
             <img src="{{url_for('static', filename='plat_icons/'+recette.plat_name.icon)}}" alt="">
             <br>
+
             <!-- list of recettes in this plat -->
             <ul class="list-group" style="display:inline-block">
                 {% for lsn in recette.plat_name.recettes %}
@@ -59,11 +69,8 @@
                 {% endif %}
                 {% endfor %}
             </ul>
-
         </div>
     </div>
     <br>
-
 </div>
-
-{% endblock content%}
+{% endblock content %}
