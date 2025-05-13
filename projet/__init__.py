@@ -40,7 +40,7 @@ def create_app(config_class=Config):
 
     from projet.models import User
     
-    admin.add_view(ModelView(User, db.session, name="Utilisateurs", endpoint="user_admin"))
+    #admin.add_view(ModelView(User, db.session, name="Utilisateurs", endpoint="user_admin"))
     
     from projet.main.routes import main
     from projet.users.routes import users
