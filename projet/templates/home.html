@@ -72,6 +72,7 @@
 </section>
 
 <!-- Recettes -->
+<!-- Recettes -->
 <section class="bg-warning-subtle">
     <div class="container p-5">
         <div class="row mb-5">
@@ -80,12 +81,18 @@
             </div>
         </div>
 
-        <div class="row">
+        <!-- ✅ Bloc de 3 cartes par ligne -->
+        <div class="row card-container">
             {% for recette in recettes.items %}
-            <div class="col-sm-12 col-md-6 col-lg-4 pb-5 d-flex align-items-stretch">
-                <div class="card recette">
-                    <img src="{{ url_for('static', filename='recette_thumbnails/' + recette.thumbnail) }}" class="card-img" alt="Image de la recette {{ recette.title }}">
+            <div class="col-sm-12 col-md-6 col-lg-4 pb-4 d-flex align-items-stretch">
+                <div class="card recette w-100">
+                    <!-- Image de la recette (avec taille uniforme via CSS) -->
+                    <img src="{{ url_for('static', filename='recette_thumbnails/' + recette.thumbnail) }}"
+                         class="card-img-top"
+                         alt="Image de la recette {{ recette.title }}">
+
                     <div class="card-body d-flex flex-column">
+                        <!-- Titre de la recette -->
                         <h5 class="card-title">
                             {% if recette.slug and recette.plat_name %}
                                 <a class="text-decoration-none text-dark"
@@ -99,21 +106,33 @@
                             {% endif %}
                         </h5>
 
+                        <!-- Nom du plat -->
                         {% if recette.plat_name %}
-                        <p class="card-text mb-0">Dans :
-                            <a class="text-decoration-none" href="{{ url_for('plats.plat', plat_title=recette.plat_name.title) }}">
+                        <p class="card-text mb-1">
+                            Dans :
+                            <a class="text-decoration-none text-success"
+                               href="{{ url_for('plats.plat', plat_title=recette.plat_name.title) }}">
                                 {{ recette.plat_name.title }}
                             </a>
                         </p>
                         {% endif %}
 
-                        <span class="mt-2 d-flex align-items-center">
-                            <img class="article-img rounded-circle me-2" src="{{ url_for('static', filename='user_pics/' + recette.author.image_file) }}" alt="Photo de {{ recette.author.username }}">
-                            Par :
-                            <a href="{{ url_for('users.author', username=recette.author.username) }}" class="ms-1">{{ recette.author.username }}</a>
-                        </span>
+                        <!-- Auteur -->
+                    <div class="auteur-date mt-auto pt-2">
+    <div class="d-flex align-items-center">
+        <img class="article-img rounded-circle me-2"
+             src="{{ url_for('static', filename='user_pics/' + recette.author.image_file) }}"
+             alt="Photo de {{ recette.author.username }}">
+        <small>
+            Par :
+            <a href="{{ url_for('users.author', username=recette.author.username) }}" class="text-decoration-none">
+                {{ recette.author.username }}
+            </a>
+        </small>
+    </div>
+    <small class="text-muted mt-1">Le : {{ recette.date_posted.strftime('%Y-%m-%d') }}</small>
+</div>
 
-                        <span class="text-muted mt-2">Le : {{ recette.date_posted.strftime('%Y-%m-%d') }}</span>
                     </div>
                 </div>
             </div>
@@ -121,5 +140,4 @@
         </div>
     </div>
 </section>
-
 {% endblock content %}

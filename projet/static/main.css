@@ -1,53 +1,78 @@
+/* Compense la navbar fixe */
 body::before {
     display: block;
     content: '';
     height: 60px;
 }
 
+/* Style général des cartes */
 .card {
     transition: 0.7s ease;
-    box-shadow: 0 5px 15px rgba(1 1 1/ 15);
-    border-radius: 100px;
+    box-shadow: 0 5px 15px rgba(1, 1, 1, 0.15);
+    border-radius: 10px;
     margin: 5px;
-    /*background-color: #3a5a40;*/
-
+    overflow: hidden;
 }
+
+/* Animation au survol */
 .card:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
-.recette {
-    box-shadow: 0 5px 15px rgba(200 200 200/ 15);
-    border-radius: 5px;
-    border: 1px solid #fff;
-
+/* Style spécifique des cartes recette */
+.card.recette {
+    height: 480px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    border: 1px solid #ffffff;
+    box-shadow: 0 5px 15px rgba(200, 200, 200, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 5px;
 }
 
-.post:hover {
-    /* transform: scale(1.1); */
-    opacity: 0.9;
+/* Image en haut de chaque carte */
+.card.recette img {
+    height: 200px !important;
+    width: 100% !important;
+    object-fit: cover;
+    flex-shrink: 0;
 }
 
-.button_width {
-    min-width: 120px;
-    max-width: 120px;
+/* Corps de la carte */
+.card.recette .card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 10px;
 }
 
+/* Informations auteur + date collées en bas */
+.card.recette .auteur-date {
+    margin-top: auto;
+}
+
+/* Image de profil (ronde et petite) */
 .article-img {
-    height: 65px;
-    width: 65px;
+    width: 30px !important;
+    height: 30px !important;
+    object-fit: cover;
+    border-radius: 50%;
     margin-right: 8px;
 }
 
+/* Image utilisateur profil (grande version) */
 .user-img {
     height: 150px;
     width: 150px;
-    margin-right: 8px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
+/* Empêche le soulignement */
 .link {
     text-decoration: none;
-    
 }
 
 .nobull {
@@ -58,6 +83,7 @@ body::before {
     font-family: 'Rakkas', cursive;
 }
 
+/* Sections */
 .content-section {
     background: #ffffff;
     padding: 10px 20px;
@@ -65,22 +91,28 @@ body::before {
     border-radius: 3px;
     margin-bottom: 20px;
 }
-#bgform {
+
+/* Fonds personnalisés */
+#bgform, #plats {
     width: 80%;
-    height: 50vh; /* Hauteur de l'écran complet */
-    background-image: url('../static/imgchhiwate.jpg'); /* Remplacer par le chemin de votre image */
-    background-size: contain; /* L'image s'ajuste pour être entièrement visible */
-    background-position: center; /* Centrer l'image dans le conteneur */
-    background-repeat: no-repeat; /* Eviter que l'image se répète */
-    background-attachment: fixed; /* Fixer l'image en arrière-plan */
-} 
-#plats {
-    width: 80%;
-    height: 50vh; /* Hauteur de l'écran complet */
-    background-image: url('../static/poulet.jpg'); /* Ajustez le chemin selon votre projet */
-    background-size: contain; /* L'image s'ajuste pour être entièrement visible */
+    height: 50vh;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
+#bgform {
+    background-image: url('../static/imgchhiwate.jpg');
+}
+#plats {
+    background-image: url('../static/poulet.jpg');
+}
 
+/* Responsive : 3 cartes par ligne sur grand écran */
+@media (min-width: 992px) {
+    .card-container .col-lg-4 {
+        flex: 0 0 auto;
+        width: 33.3333%;
+    }
+}

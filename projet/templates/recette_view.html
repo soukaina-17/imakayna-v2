@@ -2,9 +2,50 @@
 {% block recette %}
 <div class="container pt-5">
     <br>
-    <h2>{{recette.title}}</h2>
+    <h2>{{ recette.title }}</h2>
     <hr>
-    {{recette.content | safe}}
+    {{ recette.content | safe }}
 </div>
 
+<hr>
+<div class="container">
+    <h4>Ajouter un commentaire</h4>
+
+    <!-- Formulaire de commentaire -->
+    <form method="post" action="">
+        {{ form.hidden_tag() }}  <!-- Champ CSRF obligatoire -->
+
+        <div class="form-group">
+            {{ form.content.label(class="form-label") }}
+            {{ form.content(class="form-control", rows="4") }}
+
+            <!-- Affichage des erreurs de validation pour le champ 'content' -->
+            {% for error in form.content.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <br>
+        <button type="submit" class="btn btn-primary">Publier</button>
+    </form>
+</div>
+
+<hr>
+<div class="container">
+<h4>Commentaires ({{ commentaires|length }})</h4>
+
+
+    <!-- Affichage de tous les commentaires -->
+    {% for commentaire in commentaires %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <strong>{{ commentaire.user.username }}</strong> - 
+                <small>{{ commentaire.date_posted.strftime('%d/%m/%Y à %H:%M') }}</small>
+                <p>{{ commentaire.content }}</p>
+            </div>
+        </div>
+    {% else %}
+        <p>Aucun commentaire pour l’instant.</p>
+    {% endfor %}
+</div>
 {% endblock recette %}

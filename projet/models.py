@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     recettes = db.relationship("Recette", backref="author", lazy=True)
+    comments = db.relationship("Comment", backref="user", lazy=True)
 
     def get_reset_token(self):
         s = Serializer(current_app.config["SECRET_KEY"], salt="pw-reset")
@@ -60,5 +61,14 @@ class Plat(db.Model):
     def __repr__(self):
         return f"Plat('{self.title}')"
     
-    
-   
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content = db.Column(db.Text, nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    # Clés étrangères
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    recette_id = db.Column(db.Integer, db.ForeignKey('recette.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Comment('{self.content[:20]}...')"
