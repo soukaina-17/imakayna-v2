@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="text-center text-success mb-4">Recettes en attente de validation</h2>
+
+    {% if recettes %}
+        <div class="row">
+            {% for recette in recettes %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ url_for('static', filename='recette_thumbnails/' + recette.thumbnail) }}"
+                         class="card-img-top"
+                         alt="Image de la recette {{ recette.title }}"
+                         style="height: 200px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ recette.title }}</h5>
+                        <p class="card-text">
+                            Par : 
+                            <a href="{{ url_for('users.author', username=recette.author.username) }}">
+                                {{ recette.author.username }}
+                            </a><br>
+                            Plat : {{ recette.plat_name.title }}<br>
+                            Date : {{ recette.date_posted.strftime('%Y-%m-%d') }}
+                        </p>
+                        <form method="POST" action="{{ url_for('recettes.valider_recette', recette_id=recette.id) }}" class="mt-auto">
+                            <button type="submit" class="btn btn-success w-100">Valider la recette</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            Aucune recette en attente de validation.
+        </div>
+    {% endif %}
+</div>
+
+{% endblock content %}

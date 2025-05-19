@@ -1,37 +1,88 @@
-{%extends "layout.html"%}
-{% block content%}
-<!-- Tabs -->
+{% extends "layout.html" %}
 
+{% block content %}
+
+<!-- Conteneur principal du tableau de bord -->
 <div class="container my-5">
+
+    <!-- Zone des onglets (Tabs) -->
     <nav>
         <div class="nav nav-tabs" id="tablist">
-            <a class="link" href="/dashboard/profile">
-                <button class="{{'nav-link active' if active_tab=='profile' else 'nav-link'}}" id="nav-profile-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab"
-                    aria-controls="nav-profile" aria-selected="true">Profile</button>
+
+            {# Onglet "Profil" #}
+            <a class="link" href="{{ url_for('users.profile') }}">
+                <button 
+                    class="{{ 'nav-link active' if active_tab == 'profile' else 'nav-link' }}"
+                    id="nav-profile-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#nav-profile"
+                    type="button"
+                    role="tab"
+                    aria-controls="nav-profile"
+                    aria-selected="{{ 'true' if active_tab == 'profile' else 'false' }}">
+                    Profile
+                </button>
             </a>
 
-            <a class="link" href="/dashboard/new_recette">
-                <button class="{{'nav-link active' if active_tab=='new_recette' else 'nav-link'}}" id="nav-newRecette-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-newRecette" type="button" role="tab"
-                    aria-controls="nav-newRecette" aria-selected="true">Nouvelle recette</button>
+            {# Onglet "Nouvelle Recette" #}
+            <a class="link" href="{{ url_for('recettes.new_recette') }}">
+                <button 
+                    class="{{ 'nav-link active' if active_tab == 'new_recette' else 'nav-link' }}"
+                    id="nav-newRecette-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#nav-newRecette"
+                    type="button"
+                    role="tab"
+                    aria-controls="nav-newRecette"
+                    aria-selected="{{ 'true' if active_tab == 'new_recette' else 'false' }}">
+                    Nouvelle recette
+                </button>
             </a>
 
-            <a class="link" href="/dashboard/user_recettes">
-                <button class="{{'nav-link active' if active_tab=='user_recettes' else 'nav-link'}}"
-                    id="nav-user_recettes-tab" data-bs-toggle="tab" data-bs-target="#nav-user_recettes" type="button" role="tab" aria-controls="nav-user_recettes" aria-selected="true">vos recettes</button>
+            {# Onglet "Vos Recettes" (celles de l'utilisateur connecté) #}
+            <a class="link" href="{{ url_for('recettes.user_recettes') }}">
+                <button 
+                    class="{{ 'nav-link active' if active_tab == 'user_recettes' else 'nav-link' }}"
+                    id="nav-user_recettes-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#nav-user_recettes"
+                    type="button"
+                    role="tab"
+                    aria-controls="nav-user_recettes"
+                    aria-selected="{{ 'true' if active_tab == 'user_recettes' else 'false' }}">
+                    Vos recettes
+                </button>
             </a>
+
         </div>
     </nav>
-    <!-- Tab contents here -->
+
+    <!-- Contenu des onglets -->
     <div class="tab-content" id="nav-tabContent">
-        <!-- profile -->
-        {% block profile %} {% endblock profile%}
-        <!-- New Recette -->
+
+        {# Bloc inséré par le fichier qui étend ce template (ex: profile, formulaire, recettes) #}
+        {% block profile %} {% endblock profile %}
         {% block new_recette %} {% endblock new_recette %}
-        <!-- User Recettes -->
         {% block user_recettes %} {% endblock user_recettes %}
+
     </div>
 </div>
+
 {% endblock content %}
 
+
+{# Lien spécial visible uniquement pour l'administrateur connecté #}
+{% if current_user.is_authenticated and current_user.is_admin %}
+<div class="container text-center my-4">
+    <a class="btn btn-outline-danger" href="{{ url_for('recettes.recettes_a_valider') }}">
+        Recettes à valider
+    </a>
+</div>
+{% endif %}
+
+{# Lien général "Mes recettes" visible pour tous les utilisateurs connectés #}
+<div class="container text-center my-2">
+    <a class="btn btn-outline-primary" href="{{ url_for('recettes.user_recettes') }}">
+        Mes recettes
+    </a>
+</div>

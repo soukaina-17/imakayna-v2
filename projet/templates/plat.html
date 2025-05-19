@@ -24,7 +24,10 @@
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">
                             <a class="text-decoration-none text-dark"
-                                href="{{url_for('recettes.recette', recette_slug=recette.slug, plat=recette.plat_name.title)}}">{{recette.title}}</a>
+                                  href="{{ url_for('recettes.recette', plat=recette.plat_name.title, recette_slug=recette.slug) }}">
+                                  {{ recette.title }}
+                                     </a>
+
                         </h5>
                         <span><img class="article-img rounded-circle"
                                 src="{{url_for('static', filename='user_pics/'+recette.author.image_file)}}" alt="">par:

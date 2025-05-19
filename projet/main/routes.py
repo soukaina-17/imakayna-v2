@@ -37,7 +37,8 @@ def upload():
 @main.route("/")
 @main.route("/home")
 def home():
-    recettes = Recette.query.order_by(Recette.date_posted.desc()).paginate(
+    recettes = Recette.query.filter_by(is_approved=True).order_by(Recette.date_posted.desc()).paginate(
+
         page=1, per_page=6
     )
     plats = Plat.query.paginate(page=1, per_page=6)
