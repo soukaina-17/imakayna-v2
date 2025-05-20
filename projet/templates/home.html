@@ -45,19 +45,20 @@
 </section>
 
 <!-- Plats -->
-<section class="bg-warning-subtle">
-    <div class="container p-5">
-        <h3 class="text-uppercase text-center text-success bg-light" id="learn">Nos différents Plats proposés</h3>
+<section class="bg-warning-subtle ">
+    <div class="container p-4">
+        <h3 class="text-uppercase text-center text-success bg-light" id='learn'>Nos différents Plats proposés</h3>
         <div class="row">
             {% for plat in plats.items %}
             <div class="col-sm-12 col-md-6 col-lg-4 p-3 d-flex align-items-stretch">
-                <a href="{{ url_for('plats.plat', plat_title=plat.title) }}" class="text-decoration-none">
-                    <div class="card bg-success text-warning h-100 hover-shadow">
+                <a href="{{url_for('plats.plat', plat_title=plat.title)}}" class="text-decoration-none">
+                    <div class="card bg-success text-warning shadow-lg mx-auto" style="width: 300px; height: 300px;" >
                         <div class="card-body text-center">
-                            <img src="{{ url_for('static', filename='plat_icons/' + plat.icon) }}" alt="Image du plat {{ plat.title }}" class="card-img w-25">
-                            <h4 class="card-title my-3">{{ plat.title }}</h4>
-                            <p class="card-text">{{ plat.description }}</p>
-                        </div>
+                            <h4 class="card-title mb-1">{{plat.title}}   </h4>
+                            <p class="card-text">{{plat.description}}</p>
+                            <img src="{{url_for('static', filename='plat_icons/'+plat.icon)}}" alt=""
+                                style="width: 250px; height: 200px; object-fit: cover;" >
+                            </div>
                     </div>
                 </a>
             </div>
