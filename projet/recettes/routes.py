@@ -124,8 +124,14 @@ def recette(plat, recette_slug):
 @recettes.route("/dashboard/user_recettes")
 @login_required
 def user_recettes():
-    recettes = Recette.query.filter_by(author=current_user).order_by(Recette.date_posted.desc()).all()
-    return render_template("user_recettes.html", title="Mes recettes", recettes=recettes)
+    if current_user.is_admin:
+        # Affiche les recettes créées par l’admin
+        recettes = Recette.query.filter_by(author=current_user).order_by(Recette.date_posted.desc()).all()
+    else:
+        # Affiche les recettes de l’utilisateur, même refusées, avec leur statut
+        recettes = Recette.query.filter_by(author=current_user).order_by(Recette.date_posted.desc()).all()
+        
+    return render_template("user_recettes.html", title="Mes recettes", recettes=recettes, active_tab="user_recettes")
 
 # ================================
 # Suppression d'une recette
