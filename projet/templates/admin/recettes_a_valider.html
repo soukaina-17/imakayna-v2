@@ -2,24 +2,37 @@
 {% block content %}
 
 <div class="container mt-5">
-    <h2 class="mb-4">Recettes à valider</h2>
+    <h2 class="mb-4">📋 Recettes à valider</h2>
 
     {% if recettes %}
     <div class="row">
         {% for recette in recettes %}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100">
+            <div class="card h-100 shadow-sm">
                 <img src="{{ url_for('static', filename='recette_thumbnails/' + recette.thumbnail) }}"
-                     class="card-img-top" alt="image">
+                     class="card-img-top" alt="image de la recette">
                 <div class="card-body">
                     <h5 class="card-title">{{ recette.title }}</h5>
-                    <p class="card-text"><small class="text-muted">Par {{ recette.author.username }} le {{ recette.date_posted.strftime('%Y-%m-%d') }}</small></p>
-                    <a href="{{ url_for('recettes.recette', plat=recette.plat_name.title, recette_slug=recette.slug) }}"
-                       class="btn btn-outline-primary btn-sm">Voir</a>
+                    <p class="text-muted">
+                        Par <strong>{{ recette.author.username }}</strong> |
+                        Le {{ recette.date_posted.strftime('%Y-%m-%d') }}
+                    </p>
 
-                    <!-- Formulaire de validation -->
-                    <form method="POST" action="{{ url_for('recettes.valider_recette', recette_id=recette.id) }}" class="d-inline">
-                        <button type="submit" class="btn btn-success btn-sm">Valider</button>
+                    <!-- 🔍 Lien vers la recette -->
+                    <a href="{{ url_for('recettes.recette', plat=recette.plat_name.title, recette_slug=recette.slug) }}"
+                       class="btn btn-outline-primary btn-sm mb-2">Voir la recette</a>
+
+                    <!-- ✅ Bouton de validation -->
+                    <form method="POST" action="{{ url_for('recettes.valider_recette', recette_id=recette.id) }}" class="mb-2">
+                        <button type="submit" class="btn btn-success btn-sm">✅ Valider</button>
+                    </form>
+
+                    <!-- ❌ Formulaire de refus avec motif -->
+                    <form method="POST" action="{{ url_for('recettes.refuser_recette', recette_id=recette.id) }}">
+                        <div class="mb-2">
+                            <textarea name="motif" class="form-control" rows="2" placeholder="Motif du refus..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-danger btn-sm">❌ Refuser avec motif</button>
                     </form>
                 </div>
             </div>
@@ -27,7 +40,7 @@
         {% endfor %}
     </div>
     {% else %}
-    <p>Aucune recette en attente de validation.</p>
+    <div class="alert alert-info">Aucune recette en attente de validation.</div>
     {% endif %}
 </div>
 

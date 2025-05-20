@@ -58,7 +58,7 @@
                     {% if current_user.is_authenticated %}
                         {% if current_user.is_admin %}
                         <li class="nav-item">
-                            <a href="{{ url_for('recettes.recettes_en_attente') }}" class="nav-link text-success font-weight-bold">🛠 Valider les recettes</a>
+                            <a href="{{ url_for('recettes.recettes_a_valider') }}" class="nav-link text-success font-weight-bold">🛠 Valider les recettes</a>
                         </li>
                         {% endif %}
                         <div class="dropdown show">

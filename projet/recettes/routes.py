@@ -170,7 +170,57 @@ def valider_recette(recette_id):
 
     recette = Recette.query.get_or_404(recette_id)
     recette.is_approved = True
+    recette.motif_refus = None
     db.session.commit()
     flash("Recette validée avec succès.", "success")
     return redirect(url_for("recettes.recettes_a_valider"))
 
+# ================================
+# Modification d'une recette
+# ================================
+@recettes.route("/recette/update/<string:recette_slug>/<string:plat>", methods=["GET", "POST"])
+@login_required
+def update_recette(recette_slug, plat):
+    recette = Recette.query.filter_by(slug=recette_slug).first_or_404()
+
+    # Seul l'auteur ou un admin peut modifier
+    if recette.author != current_user and not current_user.is_admin:
+        abort(403)
+
+    form = RecetteUpdateForm(obj=recette)
+
+    if form.validate_on_submit():
+        recette.title = form.title.data
+        recette.content = form.content.data
+
+        # Met à jour l'image si une nouvelle a été envoyée
+        if form.thumbnail.data:
+            if recette.thumbnail:
+                delete_picture("static/recette_thumbnails/" + recette.thumbnail)
+            recette.thumbnail = save_picture(form.thumbnail.data, "static/recette_thumbnails")
+
+        db.session.commit()
+        flash("Recette mise à jour avec succès.", "success")
+        return redirect(url_for("recettes.user_recettes"))
+
+    return render_template("edit_recette.html", title="Modifier recette", form=form, recette=recette)
+
+@recettes.route("/admin/refuser_recette/<int:recette_id>", methods=["POST"])
+@login_required
+def refuser_recette(recette_id):
+    if not current_user.is_admin:
+        abort(403)
+
+    recette = Recette.query.get_or_404(recette_id)
+    motif = request.form.get("motif")
+
+    if not motif:
+        flash("Veuillez fournir un motif de refus.", "danger")
+        return redirect(url_for("recettes.recettes_a_valider"))
+
+    recette.is_approved = False  # La recette reste non approuvée
+    recette.motif_refus = motif
+    db.session.commit()
+
+    flash("Recette refusée avec motif. Elle reste cachée.", "warning")
+    return redirect(url_for("recettes.recettes_a_valider"))

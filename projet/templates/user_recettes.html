@@ -1,6 +1,5 @@
 {% extends "dashboard.html" %}
 
-{# Bloc qui sera inséré dans dashboard.html, dans le bloc nommé "user_recettes" #}
 {% block user_recettes %}
 
 <!-- Onglet actif si la variable active_tab vaut "user_recettes" -->
@@ -14,16 +13,13 @@
             <div class="row mb-5 "></div>
 
             <div class="row">
-                {# Boucle sur les recettes de l'utilisateur connecté #}
                 {% for recette in current_user.recettes %}
                 <div class="col-sm-12 col-md-6 col-lg-4 pb-5 d-flex align-items-stretch">
                     <div class="card recette">
-                        <!-- Image de la recette -->
                         <img src="{{ url_for('static', filename='recette_thumbnails/' + recette.thumbnail) }}"
                              class="card-img" alt="Image de la recette">
 
                         <div class="card-body d-flex flex-column">
-                            <!-- Titre de la recette cliquable -->
                             <h5 class="card-title">
                                 <a class="text-decoration-none text-dark"
                                    href="{{ url_for('recettes.recette', recette_slug=recette.slug, plat=recette.plat_name.title) }}">
@@ -31,7 +27,6 @@
                                 </a>
                             </h5>
 
-                            <!-- Infos sur l'auteur -->
                             <span>
                                 <img class="article-img rounded-circle"
                                      src="{{ url_for('static', filename='user_pics/' + recette.author.image_file) }}"
@@ -39,15 +34,21 @@
                                 <a href="#" class="link">{{ recette.author.username }}</a>
                             </span>
 
-                            <!-- Date de publication -->
                             <span class="text-muted">Le: {{ recette.date_posted.strftime('%Y-%m-%d') }}</span>
 
-                            <!-- Boutons Modifier et Supprimer -->
+                            <!-- Message de refus avec bouton de correction -->
+                            {% if recette.motif_refus %}
+                            <div class="alert alert-warning mt-2">
+                                ❌ <strong>Refusée :</strong> {{ recette.motif_refus }}<br>
+                                <a href="{{ url_for('recettes.update_recette', recette_slug=recette.slug, plat=recette.plat_name.title) }}"
+                                   class="btn btn-outline-secondary btn-sm mt-2">✏️ Corriger et republier</a>
+                            </div>
+                            {% endif %}
+
                             <div class="m-auto">
                                 <a href="{{ url_for('recettes.update_recette', recette_slug=recette.slug, plat=recette.plat_name.title) }}"
                                    class="btn btn-success btn-sm m-1">Modifier</a>
 
-                                <!-- Bouton qui ouvre le modal correspondant à cette recette -->
                                 <button class="btn btn-danger btn-sm m-1" data-bs-toggle="modal"
                                         data-bs-target="#deleteModal{{ recette.id }}">
                                     Supprimer
@@ -57,13 +58,11 @@
                     </div>
                 </div>
 
-                <!-- MODAL de confirmation de suppression (ID unique par recette) -->
+                <!-- MODAL de confirmation de suppression -->
                 <div class="modal fade" id="deleteModal{{ recette.id }}" tabindex="-1"
                      aria-labelledby="deleteModalLabel{{ recette.id }}" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-
-                            <!-- Titre du modal -->
                             <div class="modal-header">
                                 <h5 class="modal-title" id="deleteModalLabel{{ recette.id }}">
                                     Vous voulez bien supprimer cette recette ?
@@ -71,18 +70,11 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
-
-                            <!-- Corps du modal -->
                             <div class="modal-body">
-                                Êtes-vous sûr de vouloir supprimer cette recette ?
-                                Cette opération est irréversible.
+                                Êtes-vous sûr de vouloir supprimer cette recette ? Cette opération est irréversible.
                             </div>
-
-                            <!-- Pied du modal avec bouton et formulaire de suppression -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-success" data-bs-dismiss="modal">Fermer</button>
-
-                                <!-- Formulaire pour supprimer la recette -->
                                 <form action="{{ url_for('recettes.delete_recette', recette_id=recette.id) }}"
                                       method="POST">
                                     <input type="submit" class="btn btn-danger" value="Supprimer">
@@ -93,7 +85,6 @@
                 </div>
 
                 {% else %}
-                <!-- Message si aucune recette n'est trouvée -->
                 <p>Aucune recette trouvée pour cet utilisateur.</p>
                 {% endfor %}
             </div>

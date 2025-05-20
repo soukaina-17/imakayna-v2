@@ -45,6 +45,7 @@ class Recette(db.Model):
     thumbnail = db.Column(db.String(20), nullable=False, default="default_thumbnail.jpg" )
     slug = db.Column(db.String(32), nullable=False)
     is_approved = db.Column(db.Boolean, default=False)
+    motif_refus = db.Column(db.Text, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     plat_id = db.Column(db.Integer, db.ForeignKey("plat.id"), nullable=False)
 
@@ -72,3 +73,5 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"Comment('{self.content[:20]}...')"
+
+
