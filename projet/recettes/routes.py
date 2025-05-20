@@ -89,8 +89,9 @@ def recette(plat, recette_slug):
     recette = Recette.query.filter_by(slug=recette_slug).first_or_404()
 
     # Empêche l'accès si la recette n'est pas encore approuvée (sauf admin)
-    if not recette.is_approved and (not current_user.is_authenticated or not current_user.is_admin):
-        abort(403)
+    if not recette.is_approved:
+       if not current_user.is_authenticated or not current_user.is_admin:
+            return render_template("recette_non_validee.html", title="Recette en attente")
 
     precedent_recette, suivant_recette = get_precedent_suivant_recette(recette)
     form = CommentForm()

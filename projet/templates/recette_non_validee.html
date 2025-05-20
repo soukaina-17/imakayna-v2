@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="alert alert-warning shadow-sm p-5 rounded">
+        <h2 class="mb-3">⏳ Recette en attente de validation</h2>
+        <p class="lead">
+            Cette recette a bien été soumise, mais elle doit d'abord être validée par un administrateur avant d'être visible publiquement.
+        </p>
+        <a href="{{ url_for('users.dashboard') }}" class="btn btn-primary mt-3">
+            Retour au tableau de bord
+        </a>
+    </div>
+</div>
+{% endblock %}
