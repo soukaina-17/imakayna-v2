@@ -223,3 +223,27 @@ def refuser_recette(recette_id):
 
     flash("Recette refusée avec motif. Elle reste cachée.", "warning")
     return redirect(url_for("recettes.recettes_a_valider"))
+
+# ================================
+# deplacer une recette
+# ================================
+@recettes.route("/admin/deplacer_recette/<int:recette_id>", methods=["GET", "POST"])
+@login_required
+def deplacer_recette(recette_id):
+    if not current_user.is_admin:
+        abort(403)
+
+    recette = Recette.query.get_or_404(recette_id)
+    plats = Plat.query.all()
+
+    if request.method == "POST":
+        nouveau_plat = request.form.get("nouveau_plat")
+        if nouveau_plat and nouveau_plat != recette.plat_name:
+            recette.plat_name = nouveau_plat
+            db.session.commit()
+            flash("Recette déplacée avec succès vers une autre catégorie.", "success")
+            return redirect(url_for("recettes.recettes_a_valider"))
+        else:
+            flash("Aucun changement détecté.", "info")
+
+    return render_template("admin/deplacer_recette.html", recette=recette, plats=plats)

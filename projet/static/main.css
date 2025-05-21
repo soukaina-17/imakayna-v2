@@ -32,13 +32,6 @@ body::before {
     margin: 5px;
 }
 
-/* Image en haut de chaque carte */
-.card.recette img {
-    height: 200px !important;
-    width: 100% !important;
-    object-fit: cover;
-    flex-shrink: 0;
-}
 
 /* Corps de la carte */
 .card.recette .card-body {

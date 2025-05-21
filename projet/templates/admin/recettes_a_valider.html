@@ -34,6 +34,9 @@
                         </div>
                         <button type="submit" class="btn btn-danger btn-sm">❌ Refuser avec motif</button>
                     </form>
+                    <!-- 🔄 Bouton pour déplacer la recette -->
+                      <a href="{{ url_for('recettes.deplacer_recette', recette_id=recette.id) }}" class="btn btn-outline-info btn-sm mt-2">🔄 Déplacer</a>
+
                 </div>
             </div>
         </div>
