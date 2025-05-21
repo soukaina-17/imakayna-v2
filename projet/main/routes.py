@@ -34,15 +34,26 @@ def upload():
     return upload_success(url, filename=image_name)
 
 
-@main.route("/")
-@main.route("/home")
+@main.route("/", methods=["GET"])
+@main.route("/home", methods=["GET"])
 def home():
-    recettes = Recette.query.filter_by(is_approved=True).order_by(Recette.date_posted.desc()).paginate(
+    page = request.args.get("page", 1, type=int)
+    recherche = request.args.get("recherche", "").strip()
 
-        page=1, per_page=6
-    )
+    if recherche:
+        recettes = Recette.query.filter(
+            Recette.is_approved == True,
+            Recette.title.ilike(f"%{recherche}%")
+        ).order_by(Recette.date_posted.desc()).paginate(page=page, per_page=6)
+    else:
+        recettes = Recette.query.filter_by(
+            is_approved=True
+        ).order_by(Recette.date_posted.desc()).paginate(page=page, per_page=6)
+
     plats = Plat.query.paginate(page=1, per_page=6)
-    return render_template("home.html", recettes=recettes, plats=plats)
+    return render_template("home.html", recettes=recettes, plats=plats, recherche=recherche)
+
+
 
 
 @main.route("/about")

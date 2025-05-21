@@ -45,34 +45,47 @@
 </section>
 
 <!-- Plats -->
-<!-- Plats -->
-<section class="bg-warning-subtle ">
+<section class="bg-warning-subtle">
     <div class="container p-4">
         <h3 class="text-uppercase text-center text-success bg-light" id='learn'>Nos différents Plats proposés</h3>
         <div class="row">
             {% for plat in plats.items %}
             <div class="col-sm-12 col-md-6 col-lg-4 p-3 d-flex align-items-stretch">
-                <a href="{{url_for('plats.plat', plat_title=plat.title)}}" class="text-decoration-none">
+                <a href="{{ url_for('plats.plat', plat_title=plat.title) }}" class="text-decoration-none">
                     <div class="card bg-success text-warning shadow-lg mx-auto" style="width: 300px; height: 300px;" >
                         <div class="card-body text-center">
-                            <h4 class="card-title mb-1">{{plat.title}}   </h4>
-                            <p class="card-text">{{plat.description}}</p>
-                            <img src="{{url_for('static', filename='plat_icons/'+plat.icon)}}" alt=""
-                                style="width: 250px; height: 200px; object-fit: cover;" >
-                            </div>
+                            <h4 class="card-title mb-1">{{ plat.title }}</h4>
+                            <p class="card-text">{{ plat.description }}</p>
+                            <img src="{{ url_for('static', filename='plat_icons/' + plat.icon) }}" alt=""
+                                 style="width: 250px; height: 200px; object-fit: cover;">
+                        </div>
                     </div>
                 </a>
             </div>
             {% endfor %}
         </div>
-        <!-- Pagination -->
         <div class="d-flex justify-content-end mt-4">
             <a href="{{ url_for('plats.plats') }}" class="btn btn-warning btn-lg">Plus de Plats &gt;&gt;&gt;</a>
         </div>
     </div>
 </section>
 
-<!-- Recettes -->
+<!-- 🔍 Formulaire de recherche par plat -->
+<div class="container mt-5 mb-4">
+    <form method="get" action="{{ url_for('main.home') }}" class="d-flex justify-content-center">
+        <select name="plat" class="form-select w-25 me-2">
+            <option value="">-- Filtrer par plat --</option>
+            {% for plat in plats.items %}
+                <option value="{{ plat.title }}" {% if plat.title == plat_recherche %}selected{% endif %}>
+                    {{ plat.title }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-success me-2">Rechercher</button>
+        <a href="{{ url_for('main.home') }}" class="btn btn-outline-secondary">Réinitialiser</a>
+    </form>
+</div>
+
 <!-- Recettes -->
 <section class="bg-warning-subtle">
     <div class="container p-5">
@@ -82,18 +95,16 @@
             </div>
         </div>
 
-        <!-- ✅ Bloc de 3 cartes par ligne -->
         <div class="row card-container">
             {% for recette in recettes.items %}
             <div class="col-sm-12 col-md-6 col-lg-4 pb-4 d-flex align-items-stretch">
                 <div class="card recette w-100">
-                   <img src="{{ url_for('static', filename='recette_thumbnails/' + recette.thumbnail) }}"
-     class="card-img-top"
-     alt="Image de la recette {{ recette.title }}"
-     style="width: 100%; height: 250px; object-fit: cover;">
+                    <img src="{{ url_for('static', filename='recette_thumbnails/' + recette.thumbnail) }}"
+                         class="card-img-top"
+                         alt="Image de la recette {{ recette.title }}"
+                         style="width: 100%; height: 250px; object-fit: cover;">
 
                     <div class="card-body d-flex flex-column">
-                        <!-- Titre de la recette -->
                         <h5 class="card-title">
                             {% if recette.slug and recette.plat_name %}
                                 <a class="text-decoration-none text-dark"
@@ -107,7 +118,6 @@
                             {% endif %}
                         </h5>
 
-                        <!-- Nom du plat -->
                         {% if recette.plat_name %}
                         <p class="card-text mb-1">
                             Dans :
@@ -118,22 +128,21 @@
                         </p>
                         {% endif %}
 
-                        <!-- Auteur -->
-                    <div class="auteur-date mt-auto pt-2">
-    <div class="d-flex align-items-center">
-        <img class="article-img rounded-circle me-2"
-             src="{{ url_for('static', filename='user_pics/' + recette.author.image_file) }}"
-             alt="Photo de {{ recette.author.username }}">
-        <small>
-            Par :
-            <a href="{{ url_for('users.author', username=recette.author.username) }}" class="text-decoration-none">
-                {{ recette.author.username }}
-            </a>
-        </small>
-    </div>
-    <small class="text-muted mt-1">Le : {{ recette.date_posted.strftime('%Y-%m-%d') }}</small>
-</div>
-
+                        <div class="auteur-date mt-auto pt-2">
+                            <div class="d-flex align-items-center">
+                                <img class="article-img rounded-circle me-2"
+                                     src="{{ url_for('static', filename='user_pics/' + recette.author.image_file) }}"
+                                     alt="Photo de {{ recette.author.username }}">
+                                <small>
+                                    Par :
+                                    <a href="{{ url_for('users.author', username=recette.author.username) }}"
+                                       class="text-decoration-none">
+                                        {{ recette.author.username }}
+                                    </a>
+                                </small>
+                            </div>
+                            <small class="text-muted mt-1">Le : {{ recette.date_posted.strftime('%Y-%m-%d') }}</small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,4 +150,5 @@
         </div>
     </div>
 </section>
+
 {% endblock content %}

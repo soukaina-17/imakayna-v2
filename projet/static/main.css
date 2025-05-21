@@ -38,12 +38,20 @@ body::before {
     width: 100% !important;
     object-fit: cover;
     flex-shrink: 0;
-}*/
+} */
 
-/* Informations auteur + date collées en bas */
+/* Corps de la carte */
+.card.recette .card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 10px;
+}
+
+/* Informations auteur + date collées en bas 
 .card.recette .auteur-date {
     margin-top: auto;
-}
+}*/
 
 /* Image de profil (ronde et petite) */
 .article-img {
@@ -107,4 +115,14 @@ body::before {
         flex: 0 0 auto;
         width: 33.3333%;
     }
+}
+.card-plat {
+    width: 300px;
+    height: 300px;
+}
+.card-plat img {
+    width: 250px;
+    height: 150px;
+    object-fit: cover;
+    margin-top: auto;
 }
