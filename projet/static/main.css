@@ -32,14 +32,13 @@ body::before {
     margin: 5px;
 }
 
-
-/* Corps de la carte */
-.card.recette .card-body {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    padding: 10px;
-}
+/* Image en haut de chaque carte 
+.card.recette img {
+    height: 200px !important;
+    width: 100% !important;
+    object-fit: cover;
+    flex-shrink: 0;
+}*/
 
 /* Informations auteur + date collées en bas */
 .card.recette .auteur-date {
