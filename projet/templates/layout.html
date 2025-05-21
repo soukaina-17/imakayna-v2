@@ -37,7 +37,8 @@
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg bg-warning py-2 fixed-top">
         <div class="container">
-            <a href="{{ url_for('main.home') }}" class="navbar-brand text-success font-weight-bold">Imakaina</a>
+            <a href="{{ url_for('main.home')}}"> <img src="{{ url_for('static', filename='logo4-.png') }}" alt="Imakaina Logo" height="40"></a>
+            <a href="{{ url_for('main.home') }}" class="navbar-brand text-success font-weight-bold m-2">Imakaina</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
                 <span class="navbar-toggler-icon"></span>
             </button>

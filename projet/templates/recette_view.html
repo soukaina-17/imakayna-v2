@@ -1,25 +1,69 @@
 {% extends "recette.html" %}
 {% block recette %}
+
+<!-- Titre de la recette -->
 <div class="container pt-5">
     <br>
     <h2>{{ recette.title }}</h2>
     <hr>
+    
+    <!-- Contenu de la recette -->
     {{ recette.content | safe }}
+
+    <!-- Affichage des boutons Modifier / Supprimer -->
+    {% if current_user.is_authenticated and (current_user.id == recette.author.id or current_user.is_admin) %}
+        <div class="mt-3">
+            <!-- Bouton Modifier -->
+            <a href="{{ url_for('recettes.update_recette', plat=recette.plat_name.title, recette_slug=recette.slug) }}"
+               class="btn btn-outline-success btn-sm">✏️ Modifier</a>
+
+            <!-- Bouton Supprimer avec modal -->
+            <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                🗑 Supprimer
+            </button>
+        </div>
+
+        <!-- Modal de confirmation de suppression -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- En-tête -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Supprimer la recette</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Corps -->
+                    <div class="modal-body">
+                        Êtes-vous sûr de vouloir supprimer cette recette ? Cette action est irréversible.
+                    </div>
+
+                    <!-- Pied de modal avec bouton de confirmation -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <form action="{{ url_for('recettes.delete_recette', recette_id=recette.id) }}" method="POST">
+                            <input type="submit" class="btn btn-danger" value="Supprimer définitivement">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
 </div>
 
 <hr>
+
+<!-- Formulaire de commentaire -->
 <div class="container">
     <h4>Ajouter un commentaire</h4>
-
-    <!-- Formulaire de commentaire -->
     <form method="post" action="">
-        {{ form.hidden_tag() }}  <!-- Champ CSRF obligatoire -->
+        {{ form.hidden_tag() }}  <!-- Protection CSRF -->
 
         <div class="form-group">
             {{ form.content.label(class="form-label") }}
             {{ form.content(class="form-control", rows="4") }}
-
-            <!-- Affichage des erreurs de validation pour le champ 'content' -->
             {% for error in form.content.errors %}
                 <div class="text-danger">{{ error }}</div>
             {% endfor %}
@@ -31,15 +75,14 @@
 </div>
 
 <hr>
+
+<!-- Liste des commentaires -->
 <div class="container">
-<h4>Commentaires ({{ commentaires|length }})</h4>
-
-
-    <!-- Affichage de tous les commentaires -->
+    <h4>Commentaires ({{ commentaires|length }})</h4>
     {% for commentaire in commentaires %}
         <div class="card mb-2">
             <div class="card-body">
-                <strong>{{ commentaire.user.username }}</strong> - 
+                <strong>{{ commentaire.user.username }}</strong> -
                 <small>{{ commentaire.date_posted.strftime('%d/%m/%Y à %H:%M') }}</small>
                 <p>{{ commentaire.content }}</p>
             </div>
@@ -48,4 +91,5 @@
         <p>Aucun commentaire pour l’instant.</p>
     {% endfor %}
 </div>
+
 {% endblock recette %}

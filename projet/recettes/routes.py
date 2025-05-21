@@ -9,6 +9,7 @@ from flask_login import login_required, current_user
 from projet.helpers import save_picture
 from projet.recettes.helpers import get_precedent_suivant_recette, delete_picture
 from projet.utils.email_utils import envoyer_mail_nouvelle_recette
+from werkzeug.datastructures import FileStorage
 
 # Création du Blueprint pour les routes liées aux recettes
 recettes = Blueprint("recettes", __name__)
@@ -17,20 +18,18 @@ recettes = Blueprint("recettes", __name__)
 # Création d'une recette ou d’un plat
 # ================================
 @recettes.route("/dashboard/new_recette", methods=["GET", "POST"])
-@login_required  # Nécessite que l'utilisateur soit connecté
+@login_required
 def new_recette():
-    new_recette_form = NewRecetteForm()  # Formulaire pour ajouter une recette
-    new_plat_form = NewPlatForm()        # Formulaire pour ajouter un plat
+    new_recette_form = NewRecetteForm()
+    new_plat_form = NewPlatForm()
     form = ""
-    flag = session.pop("flag", False)    # Indique si un plat a été ajouté pour ne pas rouvrir le modal
+    flag = session.pop("flag", False)
 
-    # Détermine quel formulaire a été soumis
     if "content" in request.form:
         form = "new_recette_form"
     elif "description" in request.form:
         form = "new_plat_form"
 
-    # Formulaire recette
     if form == "new_recette_form" and new_recette_form.validate_on_submit():
         picture_file = save_picture(new_recette_form.thumbnail.data, "static/recette_thumbnails") if new_recette_form.thumbnail.data else None
         recette_slug = str(new_recette_form.slug.data).replace(" ", "-")
@@ -43,19 +42,15 @@ def new_recette():
             author=current_user,
             plat_name=plat,
             thumbnail=picture_file,
-            is_approved=False,  # ➤ Pas encore validée
+            is_approved=False,
         )
 
         db.session.add(recette)
         db.session.commit()
-
-        # Envoi email de notification (admin)
         envoyer_mail_nouvelle_recette(recette, current_app.config["MAIL_USERNAME"])
-
         flash("Votre recette a bien été créée ! Elle sera publiée après validation.", "success")
         return redirect(url_for("recettes.new_recette"))
 
-    #  Formulaire plat
     elif form == "new_plat_form" and new_plat_form.validate_on_submit():
         picture_file = save_picture(new_plat_form.icon.data, "static/plat_icons", output_size=(150, 150)) if new_plat_form.icon.data else None
         plat = Plat(
@@ -65,12 +60,10 @@ def new_recette():
         )
         db.session.add(plat)
         db.session.commit()
-
-        session["flag"] = True  # ➤ évite de rouvrir le modal
+        session["flag"] = True
         flash("Ce nouveau plat a bien été créé !", "success")
         return redirect(url_for("users.dashboard"))
 
-    # Modal affiché automatiquement si flag est désactivé
     modal = None if flag else "newPlat"
     return render_template_modal(
         "new_recette.html",
@@ -88,9 +81,8 @@ def new_recette():
 def recette(plat, recette_slug):
     recette = Recette.query.filter_by(slug=recette_slug).first_or_404()
 
-    # Empêche l'accès si la recette n'est pas encore approuvée (sauf admin)
     if not recette.is_approved:
-       if not current_user.is_authenticated or not current_user.is_admin:
+        if not current_user.is_authenticated or not current_user.is_admin:
             return render_template("recette_non_validee.html", title="Recette en attente")
 
     precedent_recette, suivant_recette = get_precedent_suivant_recette(recette)
@@ -125,13 +117,7 @@ def recette(plat, recette_slug):
 @recettes.route("/dashboard/user_recettes")
 @login_required
 def user_recettes():
-    if current_user.is_admin:
-        # Affiche les recettes créées par l’admin
-        recettes = Recette.query.filter_by(author=current_user).order_by(Recette.date_posted.desc()).all()
-    else:
-        # Affiche les recettes de l’utilisateur, même refusées, avec leur statut
-        recettes = Recette.query.filter_by(author=current_user).order_by(Recette.date_posted.desc()).all()
-        
+    recettes = Recette.query.filter_by(author=current_user).order_by(Recette.date_posted.desc()).all()
     return render_template("user_recettes.html", title="Mes recettes", recettes=recettes, active_tab="user_recettes")
 
 # ================================
@@ -142,33 +128,32 @@ def user_recettes():
 def delete_recette(recette_id):
     recette = Recette.query.get_or_404(recette_id)
 
-    # Seul l'auteur ou un admin peut supprimer
     if recette.author != current_user and not current_user.is_admin:
         abort(403)
 
-    # Supprimer l’image associée si présente
     if recette.thumbnail:
-        delete_picture("static/recette_thumbnails/" + recette.thumbnail)
+        delete_picture(recette.thumbnail, "static/recette_thumbnails")
 
     db.session.delete(recette)
     db.session.commit()
     flash("Recette supprimée avec succès.", "success")
     return redirect(url_for("recettes.user_recettes"))
 
-# voir les recettes en attente
-
+# ================================
+# Voir les recettes en attente
+# ================================
 @recettes.route("/admin/recettes_a_valider")
 @login_required
 def recettes_a_valider():
-    # Vérifie que l'utilisateur est un administrateur
     if not current_user.is_admin:
         abort(403)
 
-    # Récupère les recettes non validées
     recettes = Recette.query.filter_by(is_approved=False).order_by(Recette.date_posted.desc()).all()
     return render_template("admin/recettes_a_valider.html", recettes=recettes, title="Recettes à valider")
 
-# Route pour valider une recette
+# ================================
+# Valider une recette
+# ================================
 @recettes.route("/admin/valider_recette/<int:recette_id>", methods=["POST"])
 @login_required
 def valider_recette(recette_id):
@@ -190,7 +175,6 @@ def valider_recette(recette_id):
 def update_recette(recette_slug, plat):
     recette = Recette.query.filter_by(slug=recette_slug).first_or_404()
 
-    # Seul l'auteur ou un admin peut modifier
     if recette.author != current_user and not current_user.is_admin:
         abort(403)
 
@@ -200,18 +184,26 @@ def update_recette(recette_slug, plat):
         recette.title = form.title.data
         recette.content = form.content.data
 
-        # Met à jour l'image si une nouvelle a été envoyée
-        if form.thumbnail.data:
+        if isinstance(form.thumbnail.data, FileStorage) and form.thumbnail.data.filename:
             if recette.thumbnail:
-                delete_picture("static/recette_thumbnails/" + recette.thumbnail)
+                delete_picture(recette.thumbnail, "static/recette_thumbnails")
             recette.thumbnail = save_picture(form.thumbnail.data, "static/recette_thumbnails")
 
         db.session.commit()
         flash("Recette mise à jour avec succès.", "success")
         return redirect(url_for("recettes.user_recettes"))
 
-    return render_template("edit_recette.html", title="Modifier recette", form=form, recette=recette)
+    return render_template("new_recette.html",
+                           title="Modifier une recette",
+                           new_recette_form=form,
+                           new_plat_form=NewPlatForm(),
+                           active_tab="new_recette",
+                           recette=recette,
+                           modifier=True)
 
+# ================================
+# Refuser une recette
+# ================================
 @recettes.route("/admin/refuser_recette/<int:recette_id>", methods=["POST"])
 @login_required
 def refuser_recette(recette_id):
@@ -225,7 +217,7 @@ def refuser_recette(recette_id):
         flash("Veuillez fournir un motif de refus.", "danger")
         return redirect(url_for("recettes.recettes_a_valider"))
 
-    recette.is_approved = False  # La recette reste non approuvée
+    recette.is_approved = False
     recette.motif_refus = motif
     db.session.commit()
 
