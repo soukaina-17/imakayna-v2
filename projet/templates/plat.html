@@ -1,19 +1,19 @@
 {% extends "layout.html"%}
 {% block content %}
-<div class="container-fluid bg-danger-subtle text-dark text-center">
+<div class="container-fluid bg-warning-subtle text-dark text-center">
     <div class="container">
-        <div class="row p-3">
-            <div class="col-6">
-                <img src="{{url_for('static', filename='plat_icons/'+plat.icon)}}" alt="">
-            </div>
-            <div class="col-6">
-                <span class="lead text-dark">{{plat.description}}</span>
-            </div>
+        <div >
+            <div class=" text-center text-success my-2 py-1" >                 
+                 Chaque bouchée de cette entrée révèle un subtil équilibre de saveurs, pensée pour débuter le repas avec finesse.<br>
+                 {{plat.title}} ( {{plat.description}} ) sont soigneusement préparées avec des ingrédients frais et savoureux.
+            </div>            
         </div>
     </div>
 </div>
 <section class="bg-light">
     <div class="container p-5">
+        <div class="row mb-1 ">
+        </div>
         <div class="row mb-5 ">
         </div>
         <div class="row">
