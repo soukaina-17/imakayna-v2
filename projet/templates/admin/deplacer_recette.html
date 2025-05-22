@@ -6,24 +6,17 @@
 
     <!-- Formulaire de déplacement -->
     <form method="POST">
-        <!-- Protection CSRF -->
-        {{ csrf_token() }}
+        {{ form.csrf_token }}
 
         <!-- Sélection de la nouvelle catégorie -->
         <div class="mb-3">
-            <label for="nouveau_plat" class="form-label">Nouvelle catégorie (plat) :</label>
-            <select name="nouveau_plat" id="nouveau_plat" class="form-select" required>
-                {% for plat in plats %}
-                    <option value="{{ plat.title }}" {% if plat.title == recette.plat_name %}selected{% endif %}>
-                        {{ plat.title }}
-                    </option>
-                {% endfor %}
-            </select>
+            {{ form.nouveau_plat.label(class="form-label") }}
+            {{ form.nouveau_plat(class="form-select") }}
         </div>
 
         <!-- Boutons d'action -->
         <div class="d-flex justify-content-start">
-            <button type="submit" class="btn btn-primary">✅ Déplacer</button>
+            {{ form.submit(class="btn btn-primary") }}
             <a href="{{ url_for('recettes.recettes_a_valider') }}" class="btn btn-secondary ms-2">↩ Annuler</a>
         </div>
     </form>

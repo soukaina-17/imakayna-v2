@@ -1,14 +1,14 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-# ❌ On supprime l'import direct de Plat pour éviter les imports circulaires
+# On supprime l'import direct de Plat pour éviter les imports circulaires
 # from projet.models import Plat
 
-from wtforms import StringField, SubmitField, TextAreaField
+from wtforms import StringField, SubmitField, TextAreaField, SelectField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from flask_ckeditor import CKEditorField
 from wtforms.validators import DataRequired, Length
 
-# ✅ Import local de Plat à l'intérieur de la fonction
+# Import local de Plat à l'intérieur de la fonction
 # Cela évite que models.py et forms.py s'importent mutuellement au démarrage
 def choice_query():
     from projet.models import Plat
@@ -42,3 +42,8 @@ class RecetteUpdateForm(NewRecetteForm):
 class CommentForm(FlaskForm):
     content = TextAreaField("Votre commentaire", validators=[DataRequired()])
     submit = SubmitField("Publier")
+
+
+class DeplacerRecetteForm(FlaskForm):
+    nouveau_plat = SelectField("Nouvelle catégorie (plat)", choices=[], coerce=str)
+    submit = SubmitField("Déplacer")

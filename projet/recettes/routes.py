@@ -10,6 +10,9 @@ from projet.helpers import save_picture
 from projet.recettes.helpers import get_precedent_suivant_recette, delete_picture
 from projet.utils.email_utils import envoyer_mail_nouvelle_recette
 from werkzeug.datastructures import FileStorage
+from projet.recettes.forms import DeplacerRecetteForm
+
+
 
 # Création du Blueprint pour les routes liées aux recettes
 recettes = Blueprint("recettes", __name__)
@@ -236,14 +239,22 @@ def deplacer_recette(recette_id):
     recette = Recette.query.get_or_404(recette_id)
     plats = Plat.query.all()
 
-    if request.method == "POST":
-        nouveau_plat = request.form.get("nouveau_plat")
-        if nouveau_plat and nouveau_plat != recette.plat_name:
-            recette.plat_name = nouveau_plat
+    form = DeplacerRecetteForm()
+    form.nouveau_plat.choices = [(plat.title, plat.title) for plat in plats]
+
+    if form.validate_on_submit():
+        nouveau_plat_title = form.nouveau_plat.data
+        nouveau_plat_obj = Plat.query.filter_by(title=nouveau_plat_title).first()
+
+        if nouveau_plat_obj and nouveau_plat_obj != recette.plat_name:
+            recette.plat_name = nouveau_plat_obj
             db.session.commit()
             flash("Recette déplacée avec succès vers une autre catégorie.", "success")
             return redirect(url_for("recettes.recettes_a_valider"))
         else:
             flash("Aucun changement détecté.", "info")
 
-    return render_template("admin/deplacer_recette.html", recette=recette, plats=plats)
+    return render_template("admin/deplacer_recette.html", recette=recette, plats=plats, form=form)
+
+
+
