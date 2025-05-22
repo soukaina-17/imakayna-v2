@@ -1,4 +1,5 @@
-from flask import Blueprint
+from flask import Blueprint, current_app
+import os
 from projet.models import User, Recette
 from flask import (
     render_template,
@@ -103,7 +104,23 @@ def profile():
         image_file=image_file,
         active_tab="profile",
     )
+@users.route("/delete_profile_picture", methods=['POST'])
+@login_required
+def delete_profile_picture():
+    if current_user.image_file != 'default.jpg':
+        image_path = os.path.join(current_app.root_path, 'static/user_pics', current_user.image_file)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+        current_user.image_file = 'default.jpg'
+        db.session.commit()
+        flash('Photo de profil supprimée.', 'info')
+    else:
+        flash('Aucune photo personnalisée à supprimer.', 'warning')
 
+    # Ce return est toujours exécuté
+    return redirect(url_for('users.profile'))
+
+        
 @users.route("/author/<string:username>", methods=["GET"])
 def author(username):
     user = User.query.filter_by(username=username).first_or_404()

@@ -23,11 +23,7 @@
     <a href="{{ url_for('main.home') }}" class="btn btn-secondary">Réinitialiser</a>
 </form>
 
-<!-- Réseaux sociaux -->
-<section class="text-success m-2" style="background-color: palegoldenrod;">
-    <!-- ... (identique à ton contenu) ... -->
-</section>
-
+{% if not recherche %}
 <!-- Plats -->
 <section class="bg-warning-subtle">
     <div class="container p-4">
@@ -40,7 +36,8 @@
                         <div class="card-body text-center">
                             <h4 class="card-title mb-1">{{ plat.title }}</h4>
                             <p class="card-text">{{ plat.description }}</p>
-                            <img src="{{ url_for('static', filename='plat_icons/' + plat.icon) }}" alt="" style="width: 250px; height: 200px; object-fit: cover;">
+                            <img src="{{ url_for('static', filename='plat_icons/' + plat.icon) }}" alt=""
+                                 style="width: 250px; height: 200px; object-fit: cover;">
                         </div>
                     </div>
                 </a>
@@ -52,6 +49,7 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 <!-- Recettes -->
 <section class="bg-warning-subtle">
@@ -62,11 +60,10 @@
             </div>
         </div>
 
-        <!-- Message si aucune recette -->
         {% if recettes.total == 0 %}
-        <div class="alert alert-warning text-center w-100 mt-4">
-            Aucune recette ne correspond à votre recherche.
-        </div>
+            <div class="alert alert-warning text-center w-100 mt-4">
+                Aucune recette ne correspond à votre recherche.
+            </div>
         {% endif %}
 
         <div class="row card-container">
