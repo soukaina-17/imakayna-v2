@@ -10,6 +10,9 @@ from flask import (
     send_from_directory,
 )
 from flask import current_app
+from sqlalchemy import or_
+
+
 
 
 main = Blueprint("main", __name__)
@@ -33,7 +36,6 @@ def upload():
     url = url_for("main.uploaded_files", filename=image_name)
     return upload_success(url, filename=image_name)
 
-
 @main.route("/", methods=["GET"])
 @main.route("/home", methods=["GET"])
 def home():
@@ -43,7 +45,10 @@ def home():
     if recherche:
         recettes = Recette.query.filter(
             Recette.is_approved == True,
-            Recette.title.ilike(f"%{recherche}%")
+            or_(
+                Recette.title.ilike(f"%{recherche}%"),
+                Recette.content.ilike(f"%{recherche}%")
+            )
         ).order_by(Recette.date_posted.desc()).paginate(page=page, per_page=6)
     else:
         recettes = Recette.query.filter_by(
@@ -52,6 +57,7 @@ def home():
 
     plats = Plat.query.paginate(page=1, per_page=6)
     return render_template("home.html", recettes=recettes, plats=plats, recherche=recherche)
+
 
 
 
